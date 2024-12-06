@@ -1,0 +1,27 @@
+.container {
+  width: 80vw;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filtro {
+  margin-right: 10px;
+}
+
+.filtro label {
+  display: block;
+}
+
+.contenedorTabla {
+  width: 80vw;
+  height: 400px;
+  overflow: scroll;
+}
+
+.tabla {
+  font-size: 14px;
+}
