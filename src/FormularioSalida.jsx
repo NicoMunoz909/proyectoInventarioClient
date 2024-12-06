@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import Remision from "./Remision";
+import { config } from "./Constants";
 
 const FormularioSalida = () => {
   // State to manage input values
@@ -12,7 +13,7 @@ const FormularioSalida = () => {
     nota: "",
     responsable: "",
   });
-
+  const URL = config.url;
   const [series, setSeries] = useState([]);
 
   // Handle input change

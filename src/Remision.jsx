@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { config } from "./Constants";
 
 const Remision = ({ inputs, series }) => {
   const [serialData, setSerialData] = useState([]);
+  const URL = config.url;
 
   const fetchSerialData = async () => {
     try {

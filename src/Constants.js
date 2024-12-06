@@ -1,5 +1,5 @@
 const development = {
-  url: "${URL}/",
+  url: "http://localhost:4000/",
 };
 
 const production = {

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { config } from "./Constants";
 
 const FormularioEntrada = () => {
   const [inputs, setInputs] = useState({
@@ -11,7 +12,7 @@ const FormularioEntrada = () => {
     almacen: "",
     sector: "",
   });
-
+  const URL = config.url;
   const [series, setSeries] = useState([]);
 
   // Handle input change

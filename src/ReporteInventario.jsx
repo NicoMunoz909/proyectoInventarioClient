@@ -1,9 +1,11 @@
 import { useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { config } from "./Constants";
 
 function ReporteInventario() {
   const [report, setReport] = useState([]);
+  const URL = config.url;
 
   const fetchReport = async (e) => {
     const response = await fetch(`${URL}reporte?q=${e.target.value}`);
