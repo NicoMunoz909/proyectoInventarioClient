@@ -48,7 +48,7 @@ const FormularioEntrada = () => {
       ...inputs,
       serialNumber,
     }));
-    fetch("${URL}/entradas", {
+    fetch(`${URL}entradas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

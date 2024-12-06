@@ -65,7 +65,7 @@ const FormularioSalida = () => {
 
   const finalizarSalida = () => {
     const salida = { ...inputs, series };
-    fetch("${URL}/salidas", {
+    fetch(`${URL}salidas`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
