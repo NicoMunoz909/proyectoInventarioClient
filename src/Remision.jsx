@@ -8,7 +8,7 @@ const Remision = ({ inputs, series }) => {
       // Fetch data for all serial numbers
       const fetchedData = await Promise.all(
         series.map(async (serial) => {
-          const response = await fetch(`http://localhost:4000/inventario?serialNumber=${serial}`);
+          const response = await fetch(`${URL}/inventario?serialNumber=${serial}`);
           const data = await response.json();
           return { ...data }; // Assume data has description and part number
         })

@@ -6,7 +6,7 @@ function ReporteInventario() {
   const [report, setReport] = useState([]);
 
   const fetchReport = async (e) => {
-    const response = await fetch(`http://localhost:4000/reporte?q=${e.target.value}`);
+    const response = await fetch(`${URL}/reporte?q=${e.target.value}`);
     const data = await response.json();
     setReport(data);
   };

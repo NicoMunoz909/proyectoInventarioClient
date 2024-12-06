@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./consultaInventario.module.css";
+import { config } from "./Constants";
 
 const ConsultaInventario = () => {
   const [filters, setFilters] = useState({
@@ -17,6 +18,7 @@ const ConsultaInventario = () => {
     fechaEntrada: "",
     fechaSalida: "",
   });
+  const URL = config.url;
 
   const [soloStock, setSoloStock] = useState(true);
   const [data, setData] = useState([]);
@@ -28,7 +30,7 @@ const ConsultaInventario = () => {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams(filters).toString();
-      const response = await fetch(`http://localhost:4000/inventario?${queryParams}&soloStock=${soloStock}`);
+      const response = await fetch(`${URL}inventario?${queryParams}&soloStock=${soloStock}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
