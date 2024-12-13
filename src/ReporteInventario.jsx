@@ -8,7 +8,10 @@ function ReporteInventario() {
   const URL = config.url;
 
   const fetchReport = async (e) => {
-    const response = await fetch(`${URL}reporte?q=${e.target.value}`);
+    const inventario = document.getElementsByName("inventario");
+    const selectedInventario = Array.from(inventario).find((radio) => radio.checked)?.value;
+    console.log(selectedInventario)
+    const response = await fetch(`${URL}reporte?q=${e.target.value}&reportType=${selectedInventario}`);
     const data = await response.json();
     setReport(data);
   };
@@ -22,6 +25,17 @@ function ReporteInventario() {
   return (
     <div>
       <h1>Seleccionar Reporte</h1>
+      <fieldset>
+        <legend>Seleccionar inventario</legend>
+        <div>
+          <input type="radio" name="inventario" id="venta" value="venta" defaultChecked/>
+          <label htmlFor="venta">Venta</label>
+          <input type="radio" name="inventario" id="backup" value="backups"/>
+          <label htmlFor="backup">Backup</label>
+          <input type="radio" name="inventario" id="demo" value="demos"/>
+          <label htmlFor="demo">Demo</label>
+        </div>
+      </fieldset>
       <select name="reporte" id="reporte" defaultValue="placeholder" onChange={fetchReport}>
         <option value="placeholder" disabled>
           Seleccionar
