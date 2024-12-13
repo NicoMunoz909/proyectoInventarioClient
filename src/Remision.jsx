@@ -32,7 +32,7 @@ const Remision = ({ inputs, series }) => {
         <h1>RELACIÓN DE ENTREGA</h1>
         <h4>{new Date().toLocaleDateString()}</h4>
       </div>
-      <h2>{inputs.destino}</h2>
+      <h2>{inputs.cliente}</h2>
       <p>{inputs.direccion}</p>
       <table style={styles.table} border="1" cellPadding="3">
         <thead style={styles.encabezado}>
@@ -61,11 +61,11 @@ const Remision = ({ inputs, series }) => {
       {inputs.nota ? <p>NOTA: {inputs.nota}</p> : ""}
       <div style={styles.separado}>
         <p style={styles.izquierda}>ID AUTOMATION</p>
-        <p style={styles.izquierda}>{inputs.destino}</p>
+        <p style={styles.izquierda}>{inputs.cliente}</p>
       </div>
       <div style={styles.separado}>
-        <p style={styles.firmas}>IVAN PARTIDA</p>
-        <p style={styles.firmas}>{inputs.responsable}</p>
+        <p style={styles.firmas}>{inputs.vendedor}</p>
+        <p style={styles.firmas}>{inputs.responsableCliente}</p>
       </div>
     </div>
   );

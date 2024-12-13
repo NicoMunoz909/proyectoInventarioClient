@@ -66,7 +66,6 @@ const ConsultaInventario = () => {
       ...prevCheckboxes,
       [name]: checked,
     }));
-    console.log(checkboxes)
   };
 
   return (

@@ -6,12 +6,13 @@ import { config } from "./Constants";
 const FormularioSalida = () => {
   // State to manage input values
   const [inputs, setInputs] = useState({
-    destino: "",
+    cliente: "",
     facturaVenta: "",
     direccion: "",
     ordenDeCompra: "",
     nota: "",
-    responsable: "",
+    vendedor: "",
+    responsableCliente: "",
   });
   const URL = config.url;
   const [series, setSeries] = useState([]);
