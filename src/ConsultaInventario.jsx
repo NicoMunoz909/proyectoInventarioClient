@@ -19,8 +19,11 @@ const ConsultaInventario = () => {
     fechaSalida: "",
   });
   const URL = config.url;
-
-  const [soloStock, setSoloStock] = useState(true);
+  const [checkboxes, setCheckboxes] = useState({
+    soloStock: true,
+    soloBackups: false,
+    soloDemos: false,
+  })
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,7 +33,7 @@ const ConsultaInventario = () => {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams(filters).toString();
-      const response = await fetch(`${URL}inventario?${queryParams}&soloStock=${soloStock}`);
+      const response = await fetch(`${URL}inventario?${queryParams}&soloStock=${checkboxes.soloStock}&isBackup=${checkboxes.soloBackups}&isDemo=${checkboxes.soloDemos}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -45,7 +48,7 @@ const ConsultaInventario = () => {
 
   useEffect(() => {
     fetchData();
-  }, [soloStock]); // Fetch data whenever filters change
+  }, []); // Fetch data whenever filters change
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,7 +61,12 @@ const ConsultaInventario = () => {
   };
 
   const handleCheckboxChange = (e) => {
-    setSoloStock(e.target.checked);
+    const {name, checked} = e.target
+    setCheckboxes((prevCheckboxes) => ({
+      ...prevCheckboxes,
+      [name]: checked,
+    }));
+    console.log(checkboxes)
   };
 
   return (
@@ -70,10 +78,20 @@ const ConsultaInventario = () => {
             <input id={key} name={key} type="text" value={filters[key]} onChange={handleChange} />
           </div>
         ))}
-        <label>
-          <input type="checkbox" checked={soloStock} onChange={handleCheckboxChange} />
-          Solo mostrar articulos en stock
-        </label>
+        <div className={styles.checkboxes}>
+          <label htmlFor="soloStock">
+            <input type="checkbox" name="soloStock" defaultChecked onChange={handleCheckboxChange} />
+            Solo mostrar articulos en stock
+          </label>
+          <label htmlFor="soloBackups">
+            <input type="checkbox" name="soloBackups" onChange={handleCheckboxChange} />
+            Solo mostrar backups
+          </label>
+          <label htmlFor="soloDemos">
+            <input type="checkbox" name="soloDemos" onChange={handleCheckboxChange} />
+            Solo mostrar demos
+          </label>
+        </div>
         <input type="submit" value="Filtar"></input>
       </form>
 

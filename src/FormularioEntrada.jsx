@@ -12,6 +12,10 @@ const FormularioEntrada = () => {
     almacen: "",
     sector: "",
   });
+  const [checkboxes, setCheckboxes] = useState({
+    isBackup: false,
+    isDemo: false
+  })
   const URL = config.url;
   const [series, setSeries] = useState([]);
 
@@ -23,6 +27,14 @@ const FormularioEntrada = () => {
       [name]: value,
     }));
   };
+
+  const handleCheckbox = (e) => {
+    const { name, checked } = e.target;
+    setCheckboxes((prevCheckboxes) => ({
+      ...prevCheckboxes,
+      [name]: checked,
+    }));
+  }
 
   // Handle form submission
   const handleSubmit = (e) => {
@@ -47,8 +59,10 @@ const FormularioEntrada = () => {
   const finalizarEntrada = () => {
     const entradas = series.map((serialNumber) => ({
       ...inputs,
+      ...checkboxes,
       serialNumber,
     }));
+    console.log(entradas)
     fetch(`${URL}entradas`, {
       method: "POST",
       headers: {
@@ -103,6 +117,28 @@ const FormularioEntrada = () => {
               />
             </div>
           ))}
+          <div style={styles.formGroup}>
+              <label htmlFor="backup">
+                Back up
+              </label>
+              <input
+                type="checkbox"
+                id="isBackup"
+                name="isBackup"
+                onChange={handleCheckbox}
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label htmlFor="demo">
+                Demo
+              </label>
+              <input
+                type="checkbox"
+                id="isDemo"
+                name="isDemo"
+                onChange={handleCheckbox}
+              />
+            </div>
         </div>
         <div>
           <div style={styles.formGroup}>
