@@ -1,28 +1,28 @@
 import { useState, useEffect } from "react";
 import { config } from "./Constants";
 
-const Remision = ({ inputs, series }) => {
-  const [serialData, setSerialData] = useState([]);
+const Remision = ({ inputs, ids }) => {
+  const [itemsData, setItemsData] = useState([]);
   const URL = config.url;
 
-  const fetchSerialData = async () => {
+  const fetchItemsData = async () => {
     try {
       // Fetch data for all serial numbers
       const fetchedData = await Promise.all(
-        series.map(async (serial) => {
-          const response = await fetch(`${URL}inventario?serialNumber=${serial}`);
+        ids.map(async (id) => {
+          const response = await fetch(`${URL}inventario?id=${id}`);
           const data = await response.json();
           return { ...data }; // Assume data has description and part number
         })
       );
-      setSerialData(fetchedData);
+      setItemsData(fetchedData);
     } catch (error) {
       console.error("Error fetching serial data:", error);
     }
   };
 
   useEffect(() => {
-    fetchSerialData();
+    fetchItemsData();
   }, []);
 
   return (
@@ -39,14 +39,14 @@ const Remision = ({ inputs, series }) => {
           <tr>
             <th>No.</th>
             <th>Part Number</th>
-            <th>Description</th>
+            <th>Descripcion</th>
             <th>Serial Number</th>
             <th>Orden</th>
             <th>Factura</th>
           </tr>
         </thead>
         <tbody>
-          {serialData.map((item, index) => (
+          {itemsData.map((item, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{item[0].partNumber}</td>

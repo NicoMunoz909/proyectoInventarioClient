@@ -16,6 +16,8 @@ const FormularioSalida = () => {
   });
   const URL = config.url;
   const [series, setSeries] = useState([]);
+  const [partNumbers, setPartNumbers] = useState([]);
+  let idsActualizados = undefined;
 
   // Handle input change
   const handleChange = (e) => {
@@ -31,18 +33,34 @@ const FormularioSalida = () => {
     setSeries(series.filter((serialNumber, i) => i !== index));
   };
 
+  // Handle removal of a part number
+  const handleRemovePartNumber = (partNumberToRemove, index) => {
+    setPartNumbers(partNumbers.filter((partNumber, i) => i !== index));
+  };
+
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     const serieValue = e.target.serie.value.trim();
+    const partNumberValue = e.target.partNumber.value.trim();
     const cantidad = parseInt(e.target.cantidad.value);
     const newSeries = Array(cantidad).fill(serieValue);
-    if (serieValue && !series.includes(serieValue)) {
+    const newPartNumbers = Array(cantidad).fill(partNumberValue)
+    if (!serieValue && !partNumberValue) {
+      alert("No se ingresó serial o part number")
+    }
+    if (partNumberValue){
+      setPartNumbers([...partNumbers,...newPartNumbers])
+      e.target.partNumber.value = "";
+    };
+    if (series.includes(serieValue)) {
+      alert("El serial ya fue ingresado");
+      
+    } else if (serieValue) {
       setSeries([...series, ...newSeries]);
       e.target.serie.value = "";
       e.target.cantidad.value = 1;
-    } else {
-      alert("Please enter a valid and unique serial number.");
     }
   };
 
@@ -62,11 +80,11 @@ const FormularioSalida = () => {
 
     const printRoot = printWindow.document.getElementById("print-root");
     const root = createRoot(printRoot);
-    root.render(<Remision inputs={inputs} series={series} />);
+    root.render(<Remision inputs={inputs} ids={idsActualizados} />);
   };
 
   const finalizarSalida = () => {
-    const salida = { ...inputs, series };
+    const salida = { ...inputs, series, partNumbers };
     fetch(`${URL}salidas`, {
       method: "post",
       headers: {
@@ -78,22 +96,25 @@ const FormularioSalida = () => {
       .then((data) => {
         if (data.ok) {
           alert(data.msg);
+          idsActualizados = data.ids
           imprimirRemision();
           setInputs({
-            destino: "",
+            cliente: "",
             facturaVenta: "",
             direccion: "",
             ordenDeCompra: "",
             nota: "",
-            responsable: "",
+            vendedor: "",
+            responsableCliente: "",
           });
           setSeries([]);
+          setPartNumbers([]);
         } else {
           throw data;
         }
       })
       .catch((error) => {
-        alert("ERROR: " + error.error + ": " + error.notFoundSerialNumbers);
+        alert("ERROR: " + error.error + ": " + error.information);
       });
   };
 
@@ -124,24 +145,47 @@ const FormularioSalida = () => {
               Nro de Serie
             </label>
             <input type="text" id="serie" name="serie" style={styles.input} />
+            <label htmlFor="serie" style={styles.label}>
+              Part Number
+            </label>
+            <input type="text" id="partNumber" name="partNumber" style={styles.input} />
             <input type="submit" id="ingresar" name="ingresar" value="Ingresar" />
             <label htmlFor="cantidad" style={styles.label}>
               Cantidad
             </label>
             <input type="number" id="cantidad" name="cantidad" defaultValue={1} style={styles.input2} />
           </div>
-          <h4>SERIES</h4>
-          <div style={styles.seriesReport}>
-            <ul>
-              {series.map((serialNumber, index) => (
-                <li key={index} style={styles.serialListItem}>
-                  {serialNumber}
-                  <span onClick={() => handleRemoveSeries(serialNumber, index)} style={styles.deleteButton}>
-                    ❌
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <div style={styles.reportes}>
+            <div>
+              <h4>SERIES</h4>
+              <div style={styles.seriesReport}>
+                <ul>
+                  {series.map((serialNumber, index) => (
+                    <li key={index} style={styles.serialListItem}>
+                      {serialNumber}
+                      <span onClick={() => handleRemoveSeries(serialNumber, index)} style={styles.deleteButton}>
+                        ❌
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div>
+              <h4>PART NUMBERS</h4>
+              <div style={styles.seriesReport}>
+                <ul>
+                  {partNumbers.map((partNumber, index) => (
+                    <li key={index} style={styles.serialListItem}>
+                      {partNumber}
+                      <span onClick={() => handleRemovePartNumber(partNumber, index)} style={styles.deleteButton}>
+                        ❌
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -171,9 +215,14 @@ const styles = {
   formGroup: {
     marginBottom: "15px",
   },
+  reportes: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
   seriesReport: {
-    width: "100%",
+    width: "200px",
     height: "200px",
+    margin: "5px",
     border: "1px solid black",
     overflowY: "scroll",
   },
