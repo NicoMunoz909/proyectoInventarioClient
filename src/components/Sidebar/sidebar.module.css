@@ -21,7 +21,7 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  height: 1px;
+  height: 0px;
   width: 99.5%;
   background-color: black;
   box-shadow: 0px 1px 3px 1px black;
@@ -32,12 +32,13 @@
   position: absolute;
   bottom: 0px;
   left: 0px;
-  height: 1px;
+  height: 0px;
   width: 99.5%;
   background-color: black;
   box-shadow: 0px 1px 3px 1px black;
 }
 
 .active {
-  background-color: #3f86c9;
+  background-color: #4393df;
+  box-shadow: 0px 0px 8px 3px #1e3e5c inset;
 }

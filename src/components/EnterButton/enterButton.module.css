@@ -4,6 +4,8 @@
     margin-top: 27px;
     font-size: 30px;
     border: none;
+    background-color: transparent;
+    color: white;
 }
 
 .container:hover {

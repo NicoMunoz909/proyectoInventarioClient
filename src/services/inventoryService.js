@@ -1,5 +1,6 @@
-import {baseUrl} from "./apiClient";
+import { config } from "./apiClient";
 const apiClient = "";
+const URL = config.url;
 
 const inventoryService = {
 
@@ -11,7 +12,7 @@ const inventoryService = {
         attributes
       }
       const queryString = new URLSearchParams(queryParams).toString();
-      const response =  await fetch(`${baseUrl}/inventario${queryString ? `?${queryString}` : ''}`);
+      const response =  await fetch(`${URL}/inventario${queryString ? `?${queryString}` : ''}`);
       return response.json();
     } catch (error) {
       return error
@@ -21,7 +22,7 @@ const inventoryService = {
   // Register new items (entries)
   async createEntry(items) {
     try {
-      const response = await fetch(`${baseUrl}/inventario`, {
+      const response = await fetch(`${URL}/inventario`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(items)
@@ -34,7 +35,7 @@ const inventoryService = {
 
   // Register item exits
   async registerExit(ids, destino, facturaVenta) {
-    const response = await fetch(`${baseUrl}/inventario`, {
+    const response = await fetch(`${URL}/inventario`, {
       method: "PUT",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ids, destino, facturaVenta})
