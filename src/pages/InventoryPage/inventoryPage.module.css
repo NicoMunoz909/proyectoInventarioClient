@@ -1,0 +1,42 @@
+.container {
+  width: 900px;
+  margin: auto;
+  margin-top: 10px
+}
+  
+.tabs {
+  display: flex;
+  margin-bottom: -1px;
+}
+
+.inputs {
+  height: 130px;
+  border: 1px solid black
+}
+
+.checkboxes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 800px;
+  margin-left: 15px;
+}
+
+.row {
+  display: flex;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+  
+.filtro {
+  margin-right: 10px;
+}
+  
+.filtro label {
+  display: block;
+}
+  

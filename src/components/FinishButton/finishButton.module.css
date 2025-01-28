@@ -1,0 +1,21 @@
+.container button {
+    display: block;
+    margin: auto;
+    margin-top: 30px;
+    background-color: blue;
+    color: white;
+    text-transform: uppercase;
+}
+
+.container button:hover {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.container button:focus {
+    outline: none;
+}
+
+.disabled {
+    background-color: gray;
+}

@@ -1,0 +1,43 @@
+.container {
+  height: 100vh;
+  width: 20vw;
+  margin: 0;
+  padding: 0;
+  align-self: top;
+  box-shadow: 0px 0px 10px 1px black;
+  background-color: #2d5c88;
+}
+
+.link {
+  position: relative;
+  display: block;
+  padding: 5px 35px;
+  text-align: center;
+  color: white;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 1px;
+  width: 99.5%;
+  background-color: black;
+  box-shadow: 0px 1px 3px 1px black;
+}
+
+.last::before {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 1px;
+  width: 99.5%;
+  background-color: black;
+  box-shadow: 0px 1px 3px 1px black;
+}
+
+.active {
+  background-color: #3f86c9;
+}

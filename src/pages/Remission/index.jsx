@@ -1,29 +1,4 @@
-import { useState, useEffect } from "react";
-import { config } from "./Constants";
-
-const Remision = ({ inputs, ids }) => {
-  const [itemsData, setItemsData] = useState([]);
-  const URL = config.url;
-
-  const fetchItemsData = async () => {
-    try {
-      // Fetch data for all serial numbers
-      const fetchedData = await Promise.all(
-        ids.map(async (id) => {
-          const response = await fetch(`${URL}inventario?id=${id}`);
-          const data = await response.json();
-          return { ...data }; // Assume data has description and part number
-        })
-      );
-      setItemsData(fetchedData);
-    } catch (error) {
-      console.error("Error fetching serial data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchItemsData();
-  }, []);
+const Remission = ({ inputs, items }) => {
 
   return (
     <div style={styles.contenedor}>
@@ -46,14 +21,14 @@ const Remision = ({ inputs, ids }) => {
           </tr>
         </thead>
         <tbody>
-          {itemsData.map((item, index) => (
+          {items.map((item, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{item[0].partNumber}</td>
-              <td>{item[0].descripcion}</td>
-              <td>{item[0].serialNumber}</td>
+              <td>{item.partNumber}</td>
+              <td>{item.descripcion}</td>
+              <td>{item.serialNumber}</td>
               <td>{inputs.ordenDeCompra}</td>
-              <td>{inputs.facturaVenta}</td>
+              <td>{inputs.factura}</td>
             </tr>
           ))}
         </tbody>
@@ -96,4 +71,4 @@ const styles = {
   },
 };
 
-export default Remision;
+export default Remission;

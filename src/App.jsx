@@ -1,25 +1,19 @@
-import { NavLink, Outlet } from "react-router-dom";
-import styles from "./App.module.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import InventoryPage from './pages/InventoryPage'
+import EntriesPage from "./pages/EntriesPage";
+import ExitsPage from './pages/ExitsPage'
+import ReportsPage from './pages/ReportsPage'
 
 const App = () => {
   return (
-    <div className={styles.layout}>
-      <div className={styles.sidebar}>
-        <NavLink className={styles.link} to="/entrada">
-          Entrada Inventario
-        </NavLink>
-        <NavLink className={styles.link} to="/salida">
-          Salida Inventario
-        </NavLink>
-        <NavLink className={styles.link} to="/consulta">
-          Consulta Inventario
-        </NavLink>
-        <NavLink className={styles.link} to="/reporte">
-          Reporte Inventario
-        </NavLink>
-      </div>
-      <Outlet />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="" element={<InventoryPage />} />
+        <Route path="/entradas" element={<EntriesPage />} />
+        <Route path="/salidas" element={<ExitsPage />} />
+        <Route path="/reportes" element={<ReportsPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

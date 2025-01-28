@@ -1,0 +1,19 @@
+.tabs {
+  display: flex;
+  width: fit-content;
+  margin-bottom: -1px;
+}
+
+.inputs {
+  height: 200px;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: #2d5c88;
+  color: white;
+  box-shadow: 0px 1px 5px 1px black;
+}
+  
+.row {
+  display: flex;
+}
