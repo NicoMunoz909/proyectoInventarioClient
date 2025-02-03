@@ -2,7 +2,7 @@ import formatDate from '../../utils/formatDates';
 import styles from './inventoryList.module.css'
 import { TiDelete } from "react-icons/ti";
 
-const InventoryList = ( { style = {}, attributes, items, selectedIds = [], mode = undefined, onDelete = null, onSelect = null, onCancel = null } ) => {
+const InventoryList = ( { style = {}, attributes, items = [], selectedIds = [], mode = undefined, onDelete = null, onSelect = null, onCancel = null } ) => {
 
   const handleSelect = () => {
     const selectedRows = Array.from(document.getElementsByName("select-item")).filter( (node) => node.checked).map( (node) => parseInt(node.id.split("-")[2]))
@@ -55,6 +55,8 @@ const InventoryList = ( { style = {}, attributes, items, selectedIds = [], mode 
                     if (key !== "id") {
                       if (key === "fechaEntrada" || key === "fechaSalida") {
                         return <td key={key}>{formatDate(value)}</td>
+                      } else if (key === 'isDemo' || key === 'isBackup') {
+                        return <td key={key}>{value ? 'SI' : 'NO'}</td>
                       } else {
                         return <td key={key}>{value}</td>
                       }

@@ -1,18 +1,20 @@
 import { config } from "./apiClient";
-const apiClient = "";
 const URL = config.url;
 
 const inventoryService = {
 
   // Fetch all inventory items
-  async getAll(filters = {}, attributes=[]) {
+  async getAll(filters = {}, attributes=[], matchTypes = {}) {
     try {
       const queryParams = {
         ...filters,
-        attributes
+        attributes,
+        matchTypes: JSON.stringify(matchTypes)
       }
       const queryString = new URLSearchParams(queryParams).toString();
-      const response =  await fetch(`${URL}/inventario${queryString ? `?${queryString}` : ''}`);
+      const response =  await fetch(`${URL}/inventario${queryString ? `?${queryString}` : ''}`, {
+        headers: {'Authorization': `Bearer ${localStorage.getItem('AppInventarioToken')}`}
+      });
       return response.json();
     } catch (error) {
       return error
@@ -24,7 +26,10 @@ const inventoryService = {
     try {
       const response = await fetch(`${URL}/inventario`, {
         method: "POST",
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('AppInventarioToken')}`       
+         },
         body: JSON.stringify(items)
       })
       return response.json();
@@ -37,30 +42,33 @@ const inventoryService = {
   async registerExit(ids, destino, facturaVenta) {
     const response = await fetch(`${URL}/inventario`, {
       method: "PUT",
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('AppInventarioToken')}`
+      },
       body: JSON.stringify({ids, destino, facturaVenta})
     });
     return response.json();
   },
 
-  // Update specific item details (PATCH)
-  async updateItem(id, updates) {
-    const response = await apiClient.patch(
-      `/inventario/${id}`,
-      JSON.stringify(updates),
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-    return response.data;
-  },
+  // // Update specific item details (PATCH)
+  // async updateItem(id, updates) {
+  //   const response = await apiClient.patch(
+  //     `/inventario/${id}`,
+  //     JSON.stringify(updates),
+  //     { headers: { 'Content-Type': 'application/json' } }
+  //   );
+  //   return response.data;
+  // },
 
-  // Delete an item permanently (DELETE)
-  async deleteItem(id) {
-    const response = await apiClient.delete(
-      `/inventario/${id}`,
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-    return response.data;
-  },
+  // // Delete an item permanently (DELETE)
+  // async deleteItem(id) {
+  //   const response = await apiClient.delete(
+  //     `/inventario/${id}`,
+  //     { headers: { 'Content-Type': 'application/json' } }
+  //   );
+  //   return response.data;
+  // },
 };
 
 export default inventoryService

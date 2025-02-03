@@ -4,16 +4,26 @@ import autoTable from "jspdf-autotable";
 import styles from './reportsPage.module.css';
 import MainLayout from '../../layouts/MainLayout';
 import InventoryList from '../../components/InventoryList';
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { useAlert } from '../../contexts/AlertContext'
 
 const ReportsPage = () => {
   const [report, setReport] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { showAlert } = useAlert();
 
   const fetchReport = async (e) => {
     const inventario = document.getElementsByName("inventario");
     const selectedInventario = Array.from(inventario).find((radio) => radio.checked)?.value;
-    const response = await fetch(`http://localhost:4000/reporte?q=${e.target.value}&reportType=${selectedInventario}`);
-    const data = await response.json();
-    setReport(data);
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:4000/reporte?q=${e.target.value}&reportType=${selectedInventario}`);
+      const data = await response.json();
+      setReport(data);
+    } catch (error) {
+      showAlert(error, 'error')
+    }
+    setIsLoading(false);
   };
 
   const generatePDF = () => {
@@ -44,14 +54,10 @@ const ReportsPage = () => {
           <option value="partNumber">Cantidad x Part Number</option>
         </select>
         <h2>Reporte</h2>
-        {report.length ? (
-          <InventoryList 
+          {isLoading ? <LoadingSpinner /> : report.length > 0 && <InventoryList 
             attributes={["#","Part Number", "Cantidad"]}
             items={report}
-          />
-        ) : (
-          ""
-        )}
+          />}
         <button onClick={generatePDF}>Descargar PDF</button>
       </div>
     </MainLayout>

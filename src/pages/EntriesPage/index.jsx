@@ -7,19 +7,25 @@ import EnterButton from '../../components/EnterButton';
 import InventoryList from '../../components/InventoryList';
 import FinishButton from '../../components/FinishButton';
 import FormFields from '../../components/FormFields';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { useAlert } from '../../contexts/AlertContext';
 
 const EntriesPage = () => {
   const [activeTab, setActiveTab] = useState("DATOS")
   const [inputs, setInputs] = useState({
     proveedor: "",
     ordenDeCompra: "",
-    factura: "",
-    CFDI: "",
+    facturaCompra: "",
+    cfdi: "",
     almacen: "",
     sector: "",
     partNumber: "",
     descripcion: "",
     serialNumber: "",
+  })
+  const [checkboxes, setCheckboxes] = useState({
+    isBackup: false,
+    isDemo: false,
   })
   const [items, setItems] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -37,11 +43,21 @@ const EntriesPage = () => {
       title: "Part Number"
     }
   ]
+  const { showAlert } = useAlert();
 
   const handleTabChange = (tab) => {
     setActiveTab(tab)
     setInputs({...inputs, partNumber: "", descripcion: "", serialNumber: ""})
+    setCheckboxes({isBackup: false, isDemo: false})
   }
+
+  const handleCheckboxChange = (e) => {
+    const {name, checked} = e.target
+    setCheckboxes((prevCheckboxes) => ({
+      ...prevCheckboxes,
+      [name]: checked,
+    }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,15 +69,25 @@ const EntriesPage = () => {
 
   const handleSerialEntry = (e) => {
     e.preventDefault();
-    setItems([...items, {...inputs}])
+
+    const serialExists = items.some(item => item.serialNumber === inputs.serialNumber);
+
+    if (serialExists) {
+      showAlert("Este número de serie ya ha sido ingresado.", "error");
+      return;
+    }
+    
+    setItems([...items, {...inputs, ...checkboxes}])
     setInputs({...inputs, serialNumber: ""})
+    setCheckboxes({isDemo: false, isBackup: false})
     e.target["input-serial"].value = "";
   }
 
   const handlePartNumberEntry = (e) => {
     e.preventDefault();
-    const entries = new Array(parseInt(e.target["input-cantidad"].value)).fill({...inputs, serialNumber: "S/N"})
+    const entries = new Array(parseInt(e.target["input-cantidad"].value)).fill({...inputs, serialNumber: null, ...checkboxes})
     setItems([...items, ...entries])
+    setCheckboxes({isDemo: false, isBackup: false})
     e.target["input-part-number"].value = "";
     e.target["input-descripcion"].value = "";
     e.target["input-cantidad"].value = 1;
@@ -74,13 +100,13 @@ const EntriesPage = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     const response = await inventoryService.createEntry(items);
-    if(response.status === 'OK') {
-      alert(response.message);
+    if(response.status === 'OK') {  
+      showAlert(response.message, 'success');
       setInputs({
         proveedor: "",
         ordenDeCompra: "",
-        factura: "",
-        CFDI: "",
+        facturaCompra: "",
+        cfdi: "",
         almacen: "",
         sector: "",
         partNumber: "",
@@ -90,7 +116,7 @@ const EntriesPage = () => {
       setItems([]);
       setIsLoading(false);
     } else {
-      alert(response.message + ": \n" + response.data.join("\n"));
+      showAlert(response.message, 'error');
       setIsLoading(false);
     }
   }
@@ -103,8 +129,8 @@ const EntriesPage = () => {
             <div className={styles.row}>
               <Input label="proveedor" name="proveedor" id="input-proveedor" type="text" defaultValue={inputs.proveedor} onChange={(e) => handleInputChange(e)}/>
               <Input label="orden de compra" name="ordenDeCompra" id="input-orden" type="text" defaultValue={inputs.ordenDeCompra} onChange={(e) => handleInputChange(e)}/>
-              <Input label="factura" name="factura" id="input-factura" type="text" defaultValue={inputs.factura} onChange={(e) => handleInputChange(e)}/>
-              <Input label="CFDI" name="CFDI" id="input-cfdi" type="text" defaultValue={inputs.CFDI} onChange={(e) => handleInputChange(e)}/>
+              <Input label="factura" name="facturaCompra" id="input-factura" type="text" defaultValue={inputs.facturaCompra} onChange={(e) => handleInputChange(e)}/>
+              <Input label="CFDI" name="cfdi" id="input-cfdi" type="text" defaultValue={inputs.cfdi} onChange={(e) => handleInputChange(e)}/>
             </div>
             <div className={styles.row}>
               <Input label="almacén" name="almacen" id="input-almacen" type="text" defaultValue={inputs.almacen} onChange={(e) => handleInputChange(e)}/>
@@ -129,8 +155,7 @@ const EntriesPage = () => {
             <div className={styles.row}>
               <Input label="part number" name="partNumber" id="input-part-number" type="text" required={true} onChange={(e) => handleInputChange(e)}/>
               <Input label="descripción" name="descripcion" id="input-descripcion" type="text" required={true} onChange={(e) => handleInputChange(e)}/>
-              <Input label="serial number" name="serialNumber" id="input-serial" type="text" defaultValue="S/N" placeholder="S/N" disabled={true} onChange={(e) => handleInputChange(e)}/>
-              <Input inputStyle={{width: "30px"}} labelStyle={{width: "fit-content"}} label="cantidad" name="cantidad" id="input-cantidad" type="number" defaultValue={1} />
+              <Input inputStyle={{width: "30px"}} labelStyle={{width: "fit-content"}} label="cantidad" name="cantidad" id="input-cantidad" min={1} type="number" defaultValue={1} />
               <EnterButton isDisabled={isLoading}/>
             </div>
           </form>
@@ -141,17 +166,20 @@ const EntriesPage = () => {
   return (
     <MainLayout>
       <div className={styles.container}>
-        <FormFields tabs={tabs} renderInputs={renderInputs} activeTab={activeTab} handleChange={(tab) => handleTabChange(tab)} />
-        {/* <div className={styles.tabs}>
-          <FormTab title="Datos Entrada" isActive={activeTab === "DATOS"} onClick={() => handleTabChange("DATOS")}/>
-          <FormTab title="Serial" isActive={activeTab === "SERIAL"} onClick={() => handleTabChange("SERIAL")}/>
-          <FormTab title="Part Number" isActive={activeTab === "PART_NUMBER"} onClick={() => handleTabChange("PART_NUMBER")}/>
-        </div>
-        <div className={styles.inputs} key={activeTab}>
-          {renderInputs()}
-        </div> */}
-        <InventoryList attributes={["#", "Proveedor", "Orden de Compra", "Factura", "CFDI", "Almacén", "Sector", "Part Number", "Descripción", "Serial Number"]} items={items} mode="SHOW" onDelete={(index) => handleItemDelete(index)}/>
-        <FinishButton disabled={isLoading} onFinish={() => handleSubmit()}/>
+        <FormFields tabs={tabs} renderInputs={renderInputs} activeTab={activeTab} handleChange={(tab) => handleTabChange(tab)} >
+          {activeTab !== 'DATOS' && <div className={styles.checkboxes}>
+            <label htmlFor="isDemo">
+              <input type="checkbox" name="isDemo" checked={checkboxes.isDemo} onChange={handleCheckboxChange} />
+              DEMO
+              </label>
+            <label htmlFor="isBackup">
+              <input type="checkbox" name="isBackup" checked={checkboxes.isBackup} onChange={handleCheckboxChange} />
+              BACKUP
+            </label>
+          </div>}
+        </FormFields>
+        <InventoryList attributes={["#", "Proveedor", "Orden de Compra", "Factura", "CFDI", "Almacén", "Sector", "Part Number", "Descripción", "Serial Number", "Demo", "Backup"]} items={items} mode="SHOW" onDelete={(index) => handleItemDelete(index)}/>
+        {isLoading ? <LoadingSpinner /> :<FinishButton disabled={isLoading} onFinish={() => handleSubmit()}/>}
       </div>
     </MainLayout>
   )

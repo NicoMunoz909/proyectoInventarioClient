@@ -5,6 +5,8 @@ import InventoryList from "../../components/InventoryList";
 import Input from "../../components/Input";
 import FormFields from "../../components/FormFields";
 import MainLayout from '../../layouts/MainLayout';
+import LoadingSpinner from "../../components/LoadingSpinner"
+import { useAlert } from "../../contexts/AlertContext"
 
 const InventoryPage = () => {
 
@@ -43,6 +45,7 @@ const InventoryPage = () => {
         title: "Datos Salida"
       }
     ]
+    const { showAlert } = useAlert();
   
     // Fetch data from the backend
     const fetchData = async () => {
@@ -54,8 +57,13 @@ const InventoryPage = () => {
       if (response.status === 'OK') {
         setItems(response.data);
         setIsLoading(false);
-      } else {
-        alert(response.message);
+      } else if (response.status === 'NO MATCH') {
+        setItems([]);
+        showAlert(response.message, "error");
+        setIsLoading(false);
+      }
+      else {
+        showAlert(response.message, "error");
         setIsLoading(false);
       }
         
@@ -143,7 +151,7 @@ const InventoryPage = () => {
             <button type="submit" disabled={isLoading} onClick={handleSubmit}>FILTRAR</button>
           </div>
         </FormFields>
-        <InventoryList
+        {isLoading ? <LoadingSpinner style={{paddingTop: "200px"}}/> :  <><InventoryList
           style={{
             maxHeight: "350px",
             fontSize: "12px"
@@ -151,7 +159,7 @@ const InventoryPage = () => {
           attributes={["#", "Part Number", "Descripción", "Serial Number", "Proveedor", "CFDI", "Orden de Compra", "Factura de Compra", "Fecha de Entrada", "Almacén", "Sector", "Factura de Venta", "Cliente", "Fecha de Salida" ]}
           items={items}
         />
-      <h3>CANTIDAD: {items.length}</h3>
+      <h3>CANTIDAD: {items.length}</h3></>}
     </div>
     </MainLayout>
   )
