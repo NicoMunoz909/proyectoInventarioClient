@@ -21,7 +21,7 @@ const authService = {
       const response = await fetch(`${URL}/auth/login`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       })
       const data = await response.json();
       localStorage.setItem("AppInventarioToken", data.data);

@@ -13,8 +13,11 @@ const inventoryService = {
       }
       const queryString = new URLSearchParams(queryParams).toString();
       const response =  await fetch(`${URL}/inventario${queryString ? `?${queryString}` : ''}`, {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('AppInventarioToken')}`}
+        headers: {'Authorization': `Bearer ${localStorage.getItem('AppInventarioToken')}`},
+        credentials: "include"
       });
+      const newAccessToken = response.headers.get('Authorization');
+      if (newAccessToken) localStorage.setItem("AppInventarioToken", newAccessToken);
       return response.json();
     } catch (error) {
       return error
@@ -30,8 +33,11 @@ const inventoryService = {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('AppInventarioToken')}`       
          },
+        credentials: "include",
         body: JSON.stringify(items)
       })
+      const newAccessToken = response.headers.get('Authorization');
+      if (newAccessToken) localStorage.setItem("AppInventarioToken", newAccessToken);
       return response.json();
     } catch (error) {
       return error
@@ -46,8 +52,11 @@ const inventoryService = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('AppInventarioToken')}`
       },
+      credentials: "include",
       body: JSON.stringify({ids, destino, facturaVenta})
     });
+    const newAccessToken = response.headers.get('Authorization');
+    if (newAccessToken) localStorage.setItem("AppInventarioToken", newAccessToken);
     return response.json();
   },
 
