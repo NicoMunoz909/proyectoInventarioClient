@@ -17,7 +17,7 @@ const ReportsPage = () => {
     const selectedInventario = Array.from(inventario).find((radio) => radio.checked)?.value;
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/reporte?q=${e.target.value}&reportType=${selectedInventario}`);
+      const response = await fetch(`https://id-automation-inventario.onrender.com/reporte?q=${e.target.value}&reportType=${selectedInventario}`);
       const data = await response.json();
       setReport(data);
     } catch (error) {
