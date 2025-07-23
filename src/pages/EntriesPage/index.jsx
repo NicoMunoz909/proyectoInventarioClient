@@ -249,8 +249,6 @@ const EntriesPage = () => {
             "Part Number",
             "Descripción",
             "Serial Number",
-            "Demo",
-            "Backup",
           ]}
           items={items}
           mode="SHOW"
